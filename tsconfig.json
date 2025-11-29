@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        "module": "ESNext",
+
+        "moduleResolution": "bundler",
+
+        "strict": true,
+        "jsx": "react-jsx",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "noEmit": true
+    },
+    "include": [
+        "./resources/**/*.ts",
+        "./resources/**/*.tsx",
+        "./resources/**/*.js",
+        "./resources/**/*.jsx",
+        "./resources/js/vite-env.d.ts"
+    ]
+}
