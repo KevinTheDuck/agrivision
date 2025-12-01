@@ -7,6 +7,7 @@ import Feature from "../Components/Feature.js";
 import Intro from "../Components/Intro.js";
 import Scanner from "../Components/Scanner.js";
 import Database from "../Components/Database.js";
+import Footer from "../Components/Footer.js";
 
 interface Props {
     title: string;
@@ -35,6 +36,7 @@ export default function Home({ title }: Props) {
                     <Feature />
                     <Scanner />
                     <Database />
+                    <Footer />
                 </main>
             </Scroll>
         </>
