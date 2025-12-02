@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import { usePage } from "@inertiajs/react";
+import { Menu, X, User as UserIcon, ChevronDown, LogOut, Settings } from "lucide-react";
+import { usePage, Link } from "@inertiajs/react";
+import { PageProps } from "../types";
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { url } = usePage();
+    const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const { url, props } = usePage<PageProps>();
+    const { auth } = props;
 
     const navItems = [
         { label: "Home", href: "/" },
@@ -34,13 +37,13 @@ export default function Navbar() {
                 `}
             >
                 <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-                    <div className="flex items-center group cursor-pointer">
+                    <div className="flex items-center group cursor-pointer w-1/4">
                         <span className="text-2xl font-headline font-bold text-white group-hover:text-brand transition-colors">
                             Agrivision.
                         </span>
                     </div>
 
-                    <div className="hidden md:flex items-center gap-8 text-sm font-primary">
+                    <div className="hidden md:flex items-center justify-center gap-8 text-sm font-primary w-2/4">
                         {navItems.map((item) => {
                             const isActive = url === item.href;
                             return (
@@ -60,10 +63,81 @@ export default function Navbar() {
                                 </a>
                             );
                         })}
+                    </div>
 
-                        <button className="bg-white text-black hover:bg-green-500 px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-sm">
-                            Get Started
-                        </button>
+                    <div className="hidden md:flex items-center justify-end w-1/4">
+                        {auth.user ? (
+                            <div className="relative">
+                                <button 
+                                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                                    className="flex items-center gap-3 text-white hover:text-brand transition-colors group"
+                                >
+                                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 group-hover:border-brand/50 transition-colors bg-zinc-900">
+                                        {auth.user.avatar ? (
+                                            <img 
+                                                src={auth.user.avatar} 
+                                                alt={auth.user.name} 
+                                                className="w-full h-full object-cover"
+                                                key={auth.user.avatar} // Force re-render on avatar change
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <UserIcon size={14} />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="text-left hidden lg:block">
+                                        <p className="text-xs font-bold uppercase tracking-wider leading-none">{auth.user.name}</p>
+                                        {auth.user.flair && (
+                                            <p className="text-[10px] text-brand font-mono mt-1 leading-none">{auth.user.flair}</p>
+                                        )}
+                                    </div>
+                                    <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                                </button>
+
+                                {userMenuOpen && (
+                                    <div className="absolute top-full right-0 mt-4 w-64 bg-black/90 backdrop-blur-md border border-white/10 p-4 shadow-xl">
+                                        <div className="absolute -top-2 right-4 w-4 h-4 bg-black/90 border-t border-l border-white/10 rotate-45" />
+                                        
+                                        <div className="mb-4 pb-4 border-b border-white/10">
+                                            <p className="text-sm font-bold text-white">{auth.user.name}</p>
+                                            <p className="text-xs text-zinc-500 font-mono mt-1">{auth.user.email}</p>
+                                            {auth.user.flair && (
+                                                <span className="inline-block mt-2 px-2 py-1 bg-brand/10 text-brand text-[10px] font-mono uppercase tracking-wider rounded-sm border border-brand/20">
+                                                    {auth.user.flair}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Link 
+                                                href={route('profile.edit')}
+                                                className="flex items-center gap-3 text-xs font-mono text-zinc-400 hover:text-white hover:bg-white/5 p-2 rounded-sm transition-colors"
+                                            >
+                                                <Settings size={14} />
+                                                EDIT PROFILE
+                                            </Link>
+                                            <Link 
+                                                href="/logout" 
+                                                method="post" 
+                                                as="button"
+                                                className="w-full flex items-center gap-3 text-xs font-mono text-red-400 hover:text-red-300 hover:bg-red-500/10 p-2 rounded-sm transition-colors"
+                                            >
+                                                <LogOut size={14} />
+                                                DISCONNECT
+                                            </Link>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <Link
+                                href="/login"
+                                className="bg-white text-black hover:bg-brand px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-sm"
+                            >
+                                Sign In
+                            </Link>
+                        )}
                     </div>
 
                     <button
@@ -111,9 +185,54 @@ export default function Navbar() {
                     );
                 })}
 
-                <button className="bg-white text-black hover:bg-green-500 px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-sm">
-                    Get Started
-                </button>
+                {auth.user ? (
+                    <div className="flex flex-col gap-4">
+                        <div className="flex items-center gap-3 border-b border-white/10 pb-4 mb-2">
+                            <div className="w-10 h-10 rounded-full overflow-hidden border border-white/20">
+                                {auth.user.avatar ? (
+                                    <img src={auth.user.avatar} alt={auth.user.name} className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full bg-zinc-900 flex items-center justify-center">
+                                        <UserIcon size={16} />
+                                    </div>
+                                )}
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-white">{auth.user.name}</p>
+                                <p className="text-xs text-zinc-500 font-mono">{auth.user.email}</p>
+                            </div>
+                        </div>
+
+                        <Link
+                            href={route('profile.edit')}
+                            className="text-zinc-400 hover:text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2"
+                        >
+                            <Settings size={14} /> Edit Profile
+                        </Link>
+
+                        <Link
+                            href="/forum"
+                            className="bg-brand text-black hover:bg-white px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-sm text-center"
+                        >
+                            Go to Forum
+                        </Link>
+                        <Link
+                            href="/logout"
+                            method="post"
+                            as="button"
+                            className="text-zinc-400 hover:text-white text-xs font-bold uppercase tracking-wider transition-colors text-center flex items-center justify-center gap-2"
+                        >
+                            <LogOut size={14} /> Logout
+                        </Link>
+                    </div>
+                ) : (
+                    <Link
+                        href="/login"
+                        className="bg-white text-black hover:bg-brand px-5 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-sm text-center"
+                    >
+                        Sign In
+                    </Link>
+                )}
             </div>
         </header>
     );
