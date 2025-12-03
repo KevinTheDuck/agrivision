@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Navbar from '../../Components/Navbar';
 import PostCard from '../../Components/Forum/PostCard';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter, Pin, Megaphone, Star, Eye, EyeOff } from 'lucide-react';
 
-export default function Index({ posts, categories, filters }: any) {
+export default function Index({ posts, featuredPosts, announcementPosts, categories, filters }: any) {
+    const [showFeatured, setShowFeatured] = useState(true);
+
     const containerVariants = {
         hidden: { opacity: 0 },
         show: {
@@ -39,7 +41,7 @@ export default function Index({ posts, categories, filters }: any) {
                             <Link 
                                 // @ts-ignore
                                 href={route('forum.create')}
-                                className="w-full flex items-center justify-center gap-2 bg-brand text-black font-bold py-3 px-4 hover:bg-white transition-colors uppercase tracking-wider text-sm"
+                                className="w-full flex items-center justify-center gap-2 bg-white text-black font-bold py-3 px-4 hover:bg-brand transition-colors uppercase tracking-wider text-sm"
                             >
                                 <Plus size={16} /> Create Post
                             </Link>
@@ -88,6 +90,17 @@ export default function Index({ posts, categories, filters }: any) {
                                     </Link>
                                 </div>
                             </div>
+
+                            <div className="bg-black/40 border border-white/10 p-4">
+                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">View Options</h3>
+                                <button 
+                                    onClick={() => setShowFeatured(!showFeatured)}
+                                    className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors w-full"
+                                >
+                                    {showFeatured ? <EyeOff size={14} /> : <Eye size={14} />}
+                                    {showFeatured ? 'Hide Featured' : 'Show Featured'}
+                                </button>
+                            </div>
                         </motion.div>
 
                         {/* Main Content */}
@@ -109,6 +122,35 @@ export default function Index({ posts, categories, filters }: any) {
                                 />
                             </motion.div>
 
+                            {/* Announcements Section */}
+                            {showFeatured && announcementPosts && announcementPosts.length > 0 && (
+                                <motion.div variants={itemVariants} className="space-y-4 mb-8">
+                                    <div className="flex items-center gap-2 text-yellow-500 text-xs font-mono uppercase tracking-widest mb-2">
+                                        <Megaphone size={12} /> Announcements
+                                    </div>
+                                    {announcementPosts.map((post: any) => (
+                                        <div key={post.id} className="border-l-2 border-yellow-500 pl-4">
+                                            <PostCard post={post} />
+                                        </div>
+                                    ))}
+                                </motion.div>
+                            )}
+
+                            {/* Featured Section */}
+                            {showFeatured && featuredPosts && featuredPosts.length > 0 && (
+                                <motion.div variants={itemVariants} className="space-y-4 mb-8">
+                                    <div className="flex items-center gap-2 text-brand text-xs font-mono uppercase tracking-widest mb-2">
+                                        <Star size={12} /> Featured Transmissions
+                                    </div>
+                                    {featuredPosts.map((post: any) => (
+                                        <div key={post.id} className="border-l-2 border-brand pl-4">
+                                            <PostCard post={post} />
+                                        </div>
+                                    ))}
+                                    <div className="border-b border-white/10 my-8" />
+                                </motion.div>
+                            )}
+
                             <motion.div variants={containerVariants} className="space-y-4">
                                 {posts.data.map((post: any) => (
                                     <motion.div key={post.id} variants={itemVariants}>
@@ -121,6 +163,7 @@ export default function Index({ posts, categories, filters }: any) {
                                     </motion.div>
                                 )}
                             </motion.div>
+
 
                             {/* Pagination */}
                             <div className="flex justify-center gap-2 mt-8">

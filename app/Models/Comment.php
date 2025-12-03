@@ -9,7 +9,11 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'post_id', 'parent_id', 'body'];
+    protected $fillable = ['user_id', 'post_id', 'parent_id', 'body', 'is_pinned'];
+
+    protected $casts = [
+        'is_pinned' => 'boolean',
+    ];
 
     protected $appends = ['score', 'user_vote'];
 

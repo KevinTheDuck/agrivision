@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import Navbar from '../../Components/Navbar';
 import PostCard from '../../Components/Forum/PostCard';
-import { User as UserIcon, MessageSquare, FileText, Calendar, Tag } from 'lucide-react';
+import { User as UserIcon, MessageSquare, FileText, Calendar, Tag, Shield } from 'lucide-react';
 
 export default function Show({ profileUser, posts, comments }: any) {
     const [activeTab, setActiveTab] = useState<'posts' | 'comments'>('posts');
@@ -33,9 +33,16 @@ export default function Show({ profileUser, posts, comments }: any) {
                             </div>
 
                             <div className="text-center md:text-left flex-grow">
-                                <h1 className="text-3xl font-headline font-bold text-white tracking-wider mb-2">
-                                    {profileUser.name}
-                                </h1>
+                                <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+                                    <h1 className="text-3xl font-headline font-bold text-white tracking-wider">
+                                        {profileUser.name}
+                                    </h1>
+                                    {(profileUser.role === 'moderator' || profileUser.role === 'admin') && (
+                                        <span className="flex items-center gap-1 px-2 py-0.5 bg-green-500/10 text-green-500 text-[10px] font-mono uppercase tracking-wider rounded-sm border border-green-500/20">
+                                            <Shield size={12} /> Moderator
+                                        </span>
+                                    )}
+                                </div>
                                 {profileUser.flair && (
                                     <div className="mb-4">
                                         <span className="inline-block px-2 py-1 bg-brand/10 text-brand text-xs font-mono uppercase tracking-wider rounded-sm border border-brand/20">

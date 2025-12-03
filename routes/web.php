@@ -33,10 +33,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/forum', [ForumController::class, 'store'])->name('forum.store');
     Route::get('/forum/{id}', [ForumController::class, 'show'])->name('forum.show');
     Route::post('/forum/{id}/vote', [ForumController::class, 'vote'])->name('forum.vote');
+    Route::delete('/forum/{post}', [ForumController::class, 'destroy'])->name('forum.destroy');
+    Route::post('/forum/{post}/lock', [ForumController::class, 'toggleLock'])->name('forum.toggleLock');
+    Route::post('/forum/{post}/feature', [ForumController::class, 'toggleFeature'])->name('forum.toggleFeature');
     
     // Comment Routes
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::post('/comments/{id}/vote', [CommentController::class, 'vote'])->name('comments.vote');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('/comments/{comment}/pin', [CommentController::class, 'togglePin'])->name('comments.togglePin');
 });
 
 Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('social.redirect');

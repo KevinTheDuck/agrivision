@@ -25,7 +25,13 @@ class User extends Authenticatable
         'provider_id',
         'avatar',
         'flair',
+        'role',
     ];
+
+    public function isModerator(): bool
+    {
+        return $this->role === 'moderator' || $this->role === 'admin';
+    }
 
     /**
      * The attributes that should be hidden for serialization.

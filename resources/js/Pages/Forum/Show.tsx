@@ -1,13 +1,71 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import Navbar from '../../Components/Navbar';
 import VoteControl from '../../Components/Forum/VoteControl';
 import CommentSection from '../../Components/Forum/CommentSection';
 import ShareModal from '../../Components/ShareModal';
-import { ArrowLeft, Share2, AlertTriangle } from 'lucide-react';
+import ConfirmationModal from '../../Components/ConfirmationModal';
+import { ArrowLeft, Share2, AlertTriangle, Lock, Trash2, Shield, Star } from 'lucide-react';
 
 export default function Show({ post }: any) {
+    const { auth } = usePage().props as any;
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const [confirmModal, setConfirmModal] = useState({
+        isOpen: false,
+        title: '',
+        message: '',
+        confirmText: 'Confirm',
+        isDestructive: false,
+        onConfirm: () => {},
+    });
+
+    const isModerator = auth.user && (auth.user.role === 'moderator' || auth.user.role === 'admin');
+
+    const closeConfirmModal = () => setConfirmModal({ ...confirmModal, isOpen: false });
+
+    const handleDelete = () => {
+        setConfirmModal({
+            isOpen: true,
+            title: 'DELETE TRANSMISSION',
+            message: 'Are you sure you want to delete this transmission? This action cannot be undone.',
+            confirmText: 'Delete',
+            isDestructive: true,
+            onConfirm: () => {
+                // @ts-ignore
+                router.delete(route('forum.destroy', post.id));
+            },
+        });
+    };
+
+    const handleToggleLock = () => {
+        const action = post.is_locked ? 'unlock' : 'lock';
+        setConfirmModal({
+            isOpen: true,
+            title: `${action.toUpperCase()} TRANSMISSION`,
+            message: `Are you sure you want to ${action} this transmission? ${action === 'lock' ? 'Users will no longer be able to comment.' : 'Users will be able to comment again.'}`,
+            confirmText: action === 'lock' ? 'Lock' : 'Unlock',
+            isDestructive: action === 'lock',
+            onConfirm: () => {
+                // @ts-ignore
+                router.post(route('forum.toggleLock', post.id));
+            },
+        });
+    };
+
+    const handleToggleFeature = () => {
+        const action = post.is_featured ? 'unfeature' : 'feature';
+        setConfirmModal({
+            isOpen: true,
+            title: `${action.toUpperCase()} TRANSMISSION`,
+            message: `Are you sure you want to ${action} this transmission? ${action === 'feature' ? 'It will be displayed in the featured section.' : 'It will be removed from the featured section.'}`,
+            confirmText: action === 'feature' ? 'Feature' : 'Unfeature',
+            isDestructive: false,
+            onConfirm: () => {
+                // @ts-ignore
+                router.post(route('forum.toggleFeature', post.id));
+            },
+        });
+    };
 
     return (
         <>
@@ -24,7 +82,7 @@ export default function Show({ post }: any) {
                         <ArrowLeft size={14} /> Back to Forum
                     </Link>
 
-                    <article className="bg-black/40 border border-white/10 p-8 relative overflow-hidden">
+                    <article className={`bg-black/40 border p-8 relative overflow-hidden ${post.is_locked ? 'border-red-500/30' : 'border-white/10'}`}>
                         {/* Retro corner accents */}
                         <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-brand" />
                         <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-brand" />
@@ -38,6 +96,16 @@ export default function Show({ post }: any) {
 
                             <div className="flex-grow">
                                 <div className="flex items-center gap-2 text-xs text-zinc-500 mb-4 font-mono">
+                                    {post.is_featured && (
+                                        <span className="text-brand flex items-center gap-1 mr-2">
+                                            <Star size={12} /> FEATURED
+                                        </span>
+                                    )}
+                                    {post.is_locked && (
+                                        <span className="text-red-500 flex items-center gap-1 mr-2">
+                                            <Lock size={12} /> LOCKED
+                                        </span>
+                                    )}
                                     {post.categories.map((cat: any) => (
                                         <span key={cat.id} className={`px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider text-white ${cat.color || 'bg-zinc-700'}`}>
                                             {cat.name}
@@ -47,9 +115,12 @@ export default function Show({ post }: any) {
                                     <Link 
                                         // @ts-ignore
                                         href={route('profile.show', post.user.id)}
-                                        className="text-brand hover:underline"
+                                        className="text-brand hover:underline flex items-center gap-1"
                                     >
                                         @{post.user.name}
+                                        {(post.user.role === 'moderator' || post.user.role === 'admin') && (
+                                            <Shield size={12} className="text-green-500" />
+                                        )}
                                     </Link>
                                     <span>•</span>
                                     <span>{new Date(post.created_at).toLocaleDateString()}</span>
@@ -102,6 +173,32 @@ export default function Show({ post }: any) {
                                             Share Transmission
                                         </button>
                                     </div>
+
+                                    {isModerator && (
+                                        <div className="flex items-center gap-4">
+                                            <button 
+                                                onClick={handleToggleFeature}
+                                                className={`flex items-center gap-2 text-xs transition-colors font-mono uppercase tracking-wider ${post.is_featured ? 'text-brand hover:text-brand/80' : 'text-zinc-400 hover:text-brand'}`}
+                                            >
+                                                <Star size={14} />
+                                                {post.is_featured ? 'Unfeature' : 'Feature'}
+                                            </button>
+                                            <button 
+                                                onClick={handleToggleLock}
+                                                className="flex items-center gap-2 text-xs text-yellow-500 hover:text-yellow-400 transition-colors font-mono uppercase tracking-wider"
+                                            >
+                                                <Lock size={14} />
+                                                {post.is_locked ? 'Unlock' : 'Lock'}
+                                            </button>
+                                            <button 
+                                                onClick={handleDelete}
+                                                className="flex items-center gap-2 text-xs text-red-500 hover:text-red-400 transition-colors font-mono uppercase tracking-wider"
+                                            >
+                                                <Trash2 size={14} />
+                                                Delete
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -116,6 +213,16 @@ export default function Show({ post }: any) {
                     // @ts-ignore
                     url={route('forum.show', post.id)}
                     title={post.title}
+                />
+
+                <ConfirmationModal
+                    isOpen={confirmModal.isOpen}
+                    onClose={closeConfirmModal}
+                    onConfirm={confirmModal.onConfirm}
+                    title={confirmModal.title}
+                    message={confirmModal.message}
+                    confirmText={confirmModal.confirmText}
+                    isDestructive={confirmModal.isDestructive}
                 />
             </div>
         </>

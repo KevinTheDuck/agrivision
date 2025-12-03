@@ -13,14 +13,49 @@ class ForumController extends Controller
 {
     public function index(Request $request)
     {
+        $hasFilter = $request->has('category') || $request->has('search');
+
+        // Fetch Featured and Announcements only if no filter is active
+        $featuredPosts = [];
+        $announcementPosts = [];
+
+        if (!$hasFilter) {
+            $featuredPosts = Post::with(['user', 'categories', 'votes'])
+                ->withCount('comments')
+                ->where('is_featured', true)
+                ->latest()
+                ->get();
+
+            $announcementPosts = Post::with(['user', 'categories', 'votes'])
+                ->withCount('comments')
+                ->whereHas('categories', function ($q) {
+                    $q->where('slug', 'announcements');
+                })
+                ->latest()
+                ->get();
+        }
+
+        // Main Query
         $query = Post::with(['user', 'categories', 'votes'])
             ->withCount('comments');
 
+        // If no filter, exclude the posts shown in the top sections
+        if (!$hasFilter) {
+            $query->where('is_featured', false)
+                  ->whereDoesntHave('categories', function ($q) {
+                      $q->where('slug', 'announcements');
+                  });
+        }
+
         // Filter by category
         if ($request->has('category') && $request->category) {
-            $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('slug', $request->category);
-            });
+            if ($request->category === 'featured') {
+                $query->where('is_featured', true);
+            } else {
+                $query->whereHas('categories', function ($q) use ($request) {
+                    $q->where('slug', $request->category);
+                });
+            }
         }
 
         // Search
@@ -39,10 +74,12 @@ class ForumController extends Controller
             $query->latest();
         }
 
-        $posts = $query->paginate(10)->withQueryString();
+        $posts = $query->paginate(5)->withQueryString();
 
         return Inertia::render('Forum/Index', [
             'posts' => $posts,
+            'featuredPosts' => $featuredPosts,
+            'announcementPosts' => $announcementPosts,
             'categories' => Category::all(),
             'filters' => $request->only(['search', 'category', 'sort']),
         ]);
@@ -52,7 +89,9 @@ class ForumController extends Controller
     {
         $post = Post::with(['user', 'categories', 'votes'])
             ->with(['comments' => function ($query) {
-                $query->with(['user', 'votes', 'replies.user', 'replies.votes'])->orderBy('created_at', 'desc');
+                $query->with(['user', 'votes', 'replies.user', 'replies.votes'])
+                      ->orderBy('is_pinned', 'desc')
+                      ->orderBy('created_at', 'desc');
             }])
             ->findOrFail($id);
 
@@ -98,10 +137,53 @@ class ForumController extends Controller
         $post->save();
 
         if ($request->has('categories')) {
-            $post->categories()->sync($request->categories);
+            $categories = Category::whereIn('id', $request->categories)->get();
+            
+            // Check for restricted categories
+            foreach ($categories as $category) {
+                if ($category->is_restricted && !auth()->user()->isModerator()) {
+                    abort(403, 'You are not authorized to post in restricted categories.');
+                }
+            }
+
+            $post->categories()->attach($request->categories);
         }
 
         return redirect()->route('forum.index');
+    }
+
+    public function destroy(Post $post)
+    {
+        if (auth()->id() !== $post->user_id && !auth()->user()->isModerator()) {
+            abort(403);
+        }
+
+        $post->delete();
+        return redirect()->route('forum.index');
+    }
+
+    public function toggleFeature(Post $post)
+    {
+        if (!auth()->user()->isModerator()) {
+            abort(403, 'Only moderators can feature posts.');
+        }
+
+        $post->is_featured = !$post->is_featured;
+        $post->save();
+
+        return back();
+    }
+
+    public function toggleLock(Post $post)
+    {
+        if (!auth()->user()->isModerator()) {
+            abort(403);
+        }
+
+        $post->is_locked = !$post->is_locked;
+        $post->save();
+
+        return back();
     }
 
     public function vote(Request $request, $id)

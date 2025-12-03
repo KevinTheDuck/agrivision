@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from '@inertiajs/react';
-import { MessageSquare, Share2 } from 'lucide-react';
+import { MessageSquare, Share2, Lock, Shield, Star } from 'lucide-react';
 import VoteControl from './VoteControl';
 import ShareModal from '../ShareModal';
 
@@ -13,7 +13,7 @@ export default function PostCard({ post }: PostProps) {
 
     return (
         <>
-            <div className="flex gap-4 bg-black/40 border border-white/10 p-4 hover:border-brand/50 transition-colors group relative overflow-hidden">
+            <div className={`flex gap-4 bg-black/40 border p-4 hover:border-brand/50 transition-colors group relative overflow-hidden ${post.is_locked ? 'border-red-500/30' : 'border-white/10'}`}>
                 {/* Retro corner accents */}
                 <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-white/20 group-hover:border-brand transition-colors" />
                 <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-white/20 group-hover:border-brand transition-colors" />
@@ -26,6 +26,16 @@ export default function PostCard({ post }: PostProps) {
 
                 <div className="flex-grow">
                     <div className="flex items-center gap-2 text-xs text-zinc-500 mb-2 font-mono">
+                        {post.is_featured && (
+                            <span className="text-brand flex items-center gap-1">
+                                <Star size={10} /> FEATURED
+                            </span>
+                        )}
+                        {post.is_locked && (
+                            <span className="text-red-500 flex items-center gap-1">
+                                <Lock size={10} /> LOCKED
+                            </span>
+                        )}
                         {post.categories.map((cat: any) => (
                             <span key={cat.id} className={`px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider text-white ${cat.color || 'bg-zinc-700'}`}>
                                 {cat.name}
@@ -35,9 +45,12 @@ export default function PostCard({ post }: PostProps) {
                         <Link 
                             // @ts-ignore
                             href={route('profile.show', post.user.id)}
-                            className="text-brand hover:underline"
+                            className="text-brand hover:underline flex items-center gap-1"
                         >
                             @{post.user.name}
+                            {(post.user.role === 'moderator' || post.user.role === 'admin') && (
+                                <Shield size={10} className="text-green-500" />
+                            )}
                         </Link>
                         <span>•</span>
                         <span>{new Date(post.created_at).toLocaleDateString()}</span>

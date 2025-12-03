@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import Navbar from '../../Components/Navbar';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, Shield } from 'lucide-react';
 
 export default function Create({ categories }: any) {
+    const { auth } = usePage().props as any;
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         body: '',
@@ -13,6 +14,7 @@ export default function Create({ categories }: any) {
     });
 
     const [preview, setPreview] = useState<string | null>(null);
+    const isModerator = auth.user && (auth.user.role === 'moderator' || auth.user.role === 'admin');
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,17 +88,18 @@ export default function Create({ categories }: any) {
                                 Categories
                             </label>
                             <div className="flex flex-wrap gap-2">
-                                {categories.map((cat: any) => (
+                                {categories.filter((cat: any) => !cat.is_restricted || isModerator).map((cat: any) => (
                                     <button
                                         key={cat.id}
                                         type="button"
                                         onClick={() => toggleCategory(cat.id)}
-                                        className={`px-3 py-1 text-xs font-mono border transition-colors ${
+                                        className={`px-3 py-1 text-xs font-mono border transition-colors flex items-center gap-2 ${
                                             data.categories.includes(cat.id)
                                                 ? 'bg-brand text-black border-brand'
                                                 : 'border-white/10 text-zinc-400 hover:border-white/30'
                                         }`}
                                     >
+                                        {cat.is_restricted && <Shield size={10} />}
                                         {cat.name}
                                     </button>
                                 ))}

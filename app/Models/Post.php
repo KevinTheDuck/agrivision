@@ -16,11 +16,15 @@ class Post extends Model
         'image_path',
         'auto_classify',
         'classification_results',
+        'is_locked',
+        'is_featured',
     ];
 
     protected $casts = [
         'auto_classify' => 'boolean',
         'classification_results' => 'array',
+        'is_locked' => 'boolean',
+        'is_featured' => 'boolean',
     ];
 
     protected $appends = ['score', 'user_vote'];

@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { useForm, usePage, Link } from '@inertiajs/react';
+import { useForm, usePage, Link, router } from '@inertiajs/react';
 import VoteControl from './VoteControl';
-import { MessageSquare, CornerDownRight } from 'lucide-react';
+import { MessageSquare, CornerDownRight, Shield, Trash2, Pin } from 'lucide-react';
 
 interface CommentProps {
     comment: any;
     postId: number;
     postAuthorId: number;
     depth?: number;
+    isLocked?: boolean;
 }
 
-function CommentItem({ comment, postId, postAuthorId, depth = 0 }: CommentProps) {
+function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = false }: CommentProps) {
     const [replying, setReplying] = useState(false);
     const { data, setData, post, processing, reset } = useForm({
         post_id: postId,
@@ -30,10 +31,30 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0 }: CommentProps)
         });
     };
 
+    const handleDelete = () => {
+        if (confirm('Are you sure you want to delete this comment?')) {
+            // @ts-ignore
+            router.delete(route('comments.destroy', comment.id));
+        }
+    };
+
+    const handlePin = () => {
+        // @ts-ignore
+        router.post(route('comments.togglePin', comment.id));
+    };
+
     const isAuthor = comment.user_id === postAuthorId;
+    const isModerator = auth.user && (auth.user.role === 'moderator' || auth.user.role === 'admin');
+    const isCommenter = auth.user && auth.user.id === comment.user_id;
+    const isCommenterMod = comment.user.role === 'moderator' || comment.user.role === 'admin';
 
     return (
-        <div className={`mt-4 ${depth > 0 ? 'ml-8 border-l border-white/10 pl-4' : ''}`}>
+        <div className={`mt-4 ${depth > 0 ? 'ml-8 border-l border-white/10 pl-4' : ''} ${comment.is_pinned ? 'bg-brand/5 border border-brand/20 p-4 rounded' : ''}`}>
+            {comment.is_pinned && (
+                <div className="flex items-center gap-2 text-brand text-[10px] font-mono uppercase tracking-widest mb-2">
+                    <Pin size={10} /> Pinned Transmission
+                </div>
+            )}
             <div className="flex gap-3">
                 <div className="flex-shrink-0 pt-1">
                     <VoteControl id={comment.id} type="comment" score={comment.score} userVote={comment.user_vote} />
@@ -52,11 +73,13 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0 }: CommentProps)
                         <Link 
                             // @ts-ignore
                             href={route('profile.show', comment.user.id)}
-                            className={`font-bold hover:underline ${isAuthor ? 'text-brand' : 'text-white'}`}
+                            className={`font-bold hover:underline flex items-center gap-1 ${isAuthor ? 'text-brand' : 'text-white'}`}
                         >
                             {comment.user.name}
+                            {isCommenterMod && <Shield size={10} className="text-green-500" />}
                         </Link>
                         {isAuthor && <span className="bg-brand/10 text-brand px-1 rounded text-[10px] uppercase border border-brand/20">AUTHOR</span>}
+                        {isCommenterMod && <span className="bg-green-500/10 text-green-500 px-1 rounded text-[10px] uppercase border border-green-500/20">MOD</span>}
                         <span>•</span>
                         <span>{new Date(comment.created_at).toLocaleDateString()}</span>
                     </div>
@@ -65,12 +88,34 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0 }: CommentProps)
                         {comment.body}
                     </div>
 
-                    <button 
-                        onClick={() => setReplying(!replying)}
-                        className="text-xs text-zinc-500 hover:text-white flex items-center gap-1 font-mono uppercase tracking-wider pl-8"
-                    >
-                        <MessageSquare size={12} /> Reply
-                    </button>
+                    <div className="flex items-center gap-4 pl-8">
+                        {!isLocked && (
+                            <button 
+                                onClick={() => setReplying(!replying)}
+                                className="text-xs text-zinc-500 hover:text-white flex items-center gap-1 font-mono uppercase tracking-wider"
+                            >
+                                <MessageSquare size={12} /> Reply
+                            </button>
+                        )}
+                        
+                        {(isModerator || isCommenter) && (
+                            <button 
+                                onClick={handleDelete}
+                                className="text-xs text-red-500/50 hover:text-red-500 flex items-center gap-1 font-mono uppercase tracking-wider"
+                            >
+                                <Trash2 size={12} /> Delete
+                            </button>
+                        )}
+
+                        {isModerator && depth === 0 && (
+                            <button 
+                                onClick={handlePin}
+                                className={`text-xs flex items-center gap-1 font-mono uppercase tracking-wider ${comment.is_pinned ? 'text-brand hover:text-brand/80' : 'text-zinc-500 hover:text-white'}`}
+                            >
+                                <Pin size={12} /> {comment.is_pinned ? 'Unpin' : 'Pin'}
+                            </button>
+                        )}
+                    </div>
 
                     {replying && (
                         <form onSubmit={submitReply} className="mt-4 mb-4">
@@ -103,13 +148,16 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0 }: CommentProps)
             </div>
 
             {comment.replies && comment.replies.map((reply: any) => (
-                <CommentItem key={reply.id} comment={reply} postId={postId} postAuthorId={postAuthorId} depth={depth + 1} />
+                <CommentItem key={reply.id} comment={reply} postId={postId} postAuthorId={postAuthorId} depth={depth + 1} isLocked={isLocked} />
             ))}
         </div>
     );
 }
 
 export default function CommentSection({ post }: { post: any }) {
+    const { auth } = usePage<any>().props;
+    const isModerator = auth.user && (auth.user.role === 'moderator' || auth.user.role === 'admin');
+
     const { data, setData, post: submitPost, processing, reset } = useForm({
         post_id: post.id,
         parent_id: null,
@@ -131,28 +179,35 @@ export default function CommentSection({ post }: { post: any }) {
                 TRANSMISSIONS ({post.comments.length})
             </h3>
 
-            <form onSubmit={submit} className="mb-12">
-                <textarea
-                    value={data.body}
-                    onChange={e => setData('body', e.target.value)}
-                    className="w-full bg-black/40 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-brand font-mono text-sm"
-                    placeholder="Broadcast your thoughts..."
-                    rows={4}
-                />
-                <div className="flex justify-end mt-2">
-                    <button 
-                        type="submit" 
-                        disabled={processing}
-                        className="bg-brand text-black font-bold py-2 px-6 hover:bg-white transition-colors uppercase tracking-wider text-xs"
-                    >
-                        Send Transmission
-                    </button>
+            {post.is_locked && !isModerator ? (
+                <div className="mb-12 p-4 border border-red-500/30 bg-red-500/10 text-red-400 font-mono text-sm flex items-center gap-2">
+                    <Shield size={16} />
+                    This transmission has been locked by a moderator. No further comments are allowed.
                 </div>
-            </form>
+            ) : (
+                <form onSubmit={submit} className="mb-12">
+                    <textarea
+                        value={data.body}
+                        onChange={e => setData('body', e.target.value)}
+                        className="w-full bg-black/40 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-brand font-mono"
+                        placeholder={post.is_locked ? "Write a moderator note..." : "Add to the transmission..."}
+                        rows={4}
+                    />
+                    <div className="flex justify-end mt-2">
+                        <button 
+                            type="submit" 
+                            disabled={processing}
+                            className="bg-brand text-black px-6 py-2 font-bold uppercase hover:bg-white transition-colors text-sm"
+                        >
+                            {post.is_locked ? "Post Mod Note" : "Post Comment"}
+                        </button>
+                    </div>
+                </form>
+            )}
 
-            <div className="space-y-8">
-                {post.comments.map((comment: any) => (
-                    <CommentItem key={comment.id} comment={comment} postId={post.id} postAuthorId={post.user_id} />
+            <div className="space-y-6">
+                {post.comments.filter((c: any) => !c.parent_id).map((comment: any) => (
+                    <CommentItem key={comment.id} comment={comment} postId={post.id} postAuthorId={post.user_id} isLocked={post.is_locked} />
                 ))}
             </div>
         </div>
