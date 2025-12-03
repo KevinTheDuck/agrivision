@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "@inertiajs/react";
 import { motion } from "framer-motion";
 import {
     Database,
@@ -188,9 +189,12 @@ export default function Community() {
                         </div>
 
                         <div className="p-4 border-t border-white/10 bg-white/[0.02] text-center">
-                            <button className="text-xs font-bold text-white hover:text-green-500 uppercase tracking-widest transition-colors font-primary">
+                            <Link 
+                                href={route('forum.index')}
+                                className="text-xs font-bold text-white hover:text-green-500 uppercase tracking-widest transition-colors font-primary inline-block"
+                            >
                                 Join Discussion
-                            </button>
+                            </Link>
                         </div>
                     </div>
 

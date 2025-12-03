@@ -1,9 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
+import { Link, usePage } from "@inertiajs/react";
 import Dither from "./Dither";
 
 export default function Hero() {
+    const { auth } = usePage().props as any;
     const [scrollOpacity, setScrollOpacity] = React.useState(1);
 
     React.useEffect(() => {
@@ -61,14 +63,20 @@ export default function Hero() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-10 mb-28">
-                        <button className="group relative px-8 py-4 bg-foreground text-background text-sm font-headline font-bold uppercase tracking-wider overflow-hidden rounded-sm transition-all hover:bg-brand">
+                        <Link 
+                            href={auth.user ? route('forum.index') : route('login')}
+                            className="group relative px-8 py-4 bg-foreground text-background text-sm font-headline font-bold uppercase tracking-wider overflow-hidden rounded-sm transition-all hover:bg-brand inline-block"
+                        >
                             <span className="relative z-10 flex items-center gap-2">
                                 Start Analysis <ArrowRight size={16} />
                             </span>
-                        </button>
-                        <button className="px-8 py-4 bg-transparent border border-white/20 text-foreground font-headline text-sm font-bold uppercase tracking-wider hover:bg-white/5 rounded-sm transition-colors">
+                        </Link>
+                        <Link 
+                            href={route('forum.index')}
+                            className="px-8 py-4 bg-transparent border border-white/20 text-foreground font-headline text-sm font-bold uppercase tracking-wider hover:bg-white/5 rounded-sm transition-colors inline-block"
+                        >
                             View Community
-                        </button>
+                        </Link>
                     </div>
                 </motion.div>
 

@@ -11,8 +11,28 @@ use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
+use App\Models\User;
+
 class ProfileController extends Controller
 {
+    /**
+     * Display the user's public profile.
+     */
+    public function show(User $user): Response
+    {
+        $user->load(['posts' => function ($query) {
+            $query->with(['categories', 'votes'])->withCount('comments')->latest();
+        }, 'comments' => function ($query) {
+            $query->with(['post', 'votes'])->latest();
+        }]);
+
+        return Inertia::render('Profile/Show', [
+            'profileUser' => $user,
+            'posts' => $user->posts,
+            'comments' => $user->comments,
+        ]);
+    }
+
     /**
      * Display the user's profile form.
      */
