@@ -95,6 +95,8 @@ class ForumController extends Controller
             }])
             ->findOrFail($id);
 
+        $post->increment('views');
+
         return Inertia::render('Forum/Show', [
             'post' => $post,
         ]);

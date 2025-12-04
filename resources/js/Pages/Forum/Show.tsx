@@ -6,7 +6,7 @@ import VoteControl from '../../Components/Forum/VoteControl';
 import CommentSection from '../../Components/Forum/CommentSection';
 import ShareModal from '../../Components/ShareModal';
 import ConfirmationModal from '../../Components/ConfirmationModal';
-import { ArrowLeft, Share2, AlertTriangle, Lock, Trash2, Shield, Star } from 'lucide-react';
+import { ArrowLeft, Share2, AlertTriangle, Lock, Trash2, Shield, Star, Eye } from 'lucide-react';
 
 export default function Show({ post }: any) {
     const { auth } = usePage().props as any;
@@ -36,6 +36,7 @@ export default function Show({ post }: any) {
     };
 
     const isModerator = auth.user && (auth.user.role === 'moderator' || auth.user.role === 'admin');
+    const isAuthor = auth.user && auth.user.id === post.user_id;
 
     const closeConfirmModal = () => setConfirmModal({ ...confirmModal, isOpen: false });
 
@@ -147,6 +148,14 @@ export default function Show({ post }: any) {
                                         </Link>
                                         <span>•</span>
                                         <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                                        {(isModerator || isAuthor) && (
+                                            <>
+                                                <span>•</span>
+                                                <span className="flex items-center gap-1 text-zinc-400">
+                                                    <Eye size={12} /> {post.views} Views
+                                                </span>
+                                            </>
+                                        )}
                                     </div>
 
                                     <h1 className="text-3xl md:text-4xl font-headline font-bold text-white mb-6 tracking-wide leading-tight">

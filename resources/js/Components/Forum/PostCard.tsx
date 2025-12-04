@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from '@inertiajs/react';
-import { MessageSquare, Share2, Lock, Shield, Star } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { MessageSquare, Share2, Lock, Shield, Star, Eye } from 'lucide-react';
 import VoteControl from './VoteControl';
 import ShareModal from '../ShareModal';
 
@@ -10,6 +10,9 @@ interface PostProps {
 
 export default function PostCard({ post }: PostProps) {
     const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const { auth } = usePage().props as any;
+    const isModerator = auth.user && (auth.user.role === 'moderator' || auth.user.role === 'admin');
+    const isAuthor = auth.user && auth.user.id === post.user_id;
 
     return (
         <>
@@ -87,6 +90,12 @@ export default function PostCard({ post }: PostProps) {
                             <Share2 size={14} />
                             Share
                         </button>
+                        {(isModerator || isAuthor) && (
+                            <div className="flex items-center gap-2 text-xs text-zinc-400 font-primary uppercase tracking-wider ml-auto">
+                                <Eye size={14} />
+                                {post.views} Views
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

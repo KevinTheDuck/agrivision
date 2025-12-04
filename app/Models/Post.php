@@ -18,6 +18,7 @@ class Post extends Model
         'classification_results',
         'is_locked',
         'is_featured',
+        'views',
     ];
 
     protected $casts = [
@@ -25,6 +26,7 @@ class Post extends Model
         'classification_results' => 'array',
         'is_locked' => 'boolean',
         'is_featured' => 'boolean',
+        'views' => 'integer',
     ];
 
     protected $appends = ['score', 'user_vote'];
