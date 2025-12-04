@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import Navbar from '../../Components/Navbar';
-import { Upload, X, Shield } from 'lucide-react';
+import { Upload, X, Shield, Check } from 'lucide-react';
 
 export default function Create({ categories }: any) {
     const { auth } = usePage().props as any;
@@ -49,42 +49,42 @@ export default function Create({ categories }: any) {
                         <h1 className="text-3xl font-headline font-bold text-white tracking-wider">
                             NEW TRANSMISSION
                         </h1>
-                        <p className="text-brand/60 text-xs font-mono uppercase tracking-widest mt-2">
+                        <p className="text-brand/60 text-xs font-primary uppercase tracking-widest mt-2">
                             // Broadcast to the network
                         </p>
                     </div>
 
                     <form onSubmit={submit} className="space-y-6">
                         <div>
-                            <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-2">
+                            <label className="block text-xs font-primary text-zinc-400 uppercase tracking-wider mb-2">
                                 Subject
                             </label>
                             <input
                                 type="text"
                                 value={data.title}
                                 onChange={e => setData('title', e.target.value)}
-                                className="w-full bg-black/40 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-brand font-mono text-sm"
+                                className="w-full bg-black/40 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-brand font-primary text-sm"
                                 placeholder="Enter subject..."
                             />
-                            {errors.title && <p className="text-red-500 text-xs mt-1 font-mono">{errors.title}</p>}
+                            {errors.title && <p className="text-red-500 text-xs mt-1 font-primary">{errors.title}</p>}
                         </div>
 
                         <div>
-                            <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-2">
+                            <label className="block text-xs font-primary text-zinc-400 uppercase tracking-wider mb-2">
                                 Message Body
                             </label>
                             <textarea
                                 value={data.body}
                                 onChange={e => setData('body', e.target.value)}
                                 rows={8}
-                                className="w-full bg-black/40 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-brand font-mono text-sm"
+                                className="w-full bg-black/40 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-brand font-primary text-sm"
                                 placeholder="Enter message..."
                             />
-                            {errors.body && <p className="text-red-500 text-xs mt-1 font-mono">{errors.body}</p>}
+                            {errors.body && <p className="text-red-500 text-xs mt-1 font-primary">{errors.body}</p>}
                         </div>
 
                         <div>
-                            <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-2">
+                            <label className="block text-xs font-primary text-zinc-400 uppercase tracking-wider mb-2">
                                 Categories
                             </label>
                             <div className="flex flex-wrap gap-2">
@@ -93,7 +93,7 @@ export default function Create({ categories }: any) {
                                         key={cat.id}
                                         type="button"
                                         onClick={() => toggleCategory(cat.id)}
-                                        className={`px-3 py-1 text-xs font-mono border transition-colors flex items-center gap-2 ${
+                                        className={`px-3 py-1 text-xs font-primary border transition-colors flex items-center gap-2 ${
                                             data.categories.includes(cat.id)
                                                 ? 'bg-brand text-black border-brand'
                                                 : 'border-white/10 text-zinc-400 hover:border-white/30'
@@ -107,7 +107,7 @@ export default function Create({ categories }: any) {
                         </div>
 
                         <div>
-                            <label className="block text-xs font-mono text-zinc-400 uppercase tracking-wider mb-2">
+                            <label className="block text-xs font-primary text-zinc-400 uppercase tracking-wider mb-2">
                                 Attachment
                             </label>
                             <div className="border border-white/10 border-dashed p-8 text-center hover:border-brand/50 transition-colors relative">
@@ -136,30 +136,54 @@ export default function Create({ categories }: any) {
                                         />
                                         <label htmlFor="image" className="cursor-pointer flex flex-col items-center gap-2 text-zinc-500 hover:text-brand transition-colors">
                                             <Upload size={24} />
-                                            <span className="text-xs font-mono uppercase">Upload Image</span>
+                                            <span className="text-xs font-primary uppercase">Upload Image</span>
                                         </label>
                                     </>
                                 )}
                             </div>
-                            {errors.image && <p className="text-red-500 text-xs mt-1 font-mono">{errors.image}</p>}
+                            {errors.image && <p className="text-red-500 text-xs mt-1 font-primary">{errors.image}</p>}
                         </div>
 
                         {data.image && (
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    id="auto_classify"
-                                    checked={data.auto_classify}
-                                    onChange={e => setData('auto_classify', e.target.checked)}
-                                    className="rounded border-white/10 bg-black/40 text-brand focus:ring-brand"
-                                />
-                                <label htmlFor="auto_classify" className="text-xs font-mono text-zinc-400 uppercase tracking-wider">
-                                    Request Auto-Classification (AI Analysis)
-                                </label>
+                            <div 
+                                onClick={() => setData('auto_classify', !data.auto_classify)}
+                                className={`cursor-pointer border p-4 flex items-center justify-between transition-all ${
+                                    data.auto_classify 
+                                        ? 'bg-brand/10 border-brand' 
+                                        : 'bg-black/40 border-white/10 hover:border-white/30'
+                                }`}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className={`w-5 h-5 border flex items-center justify-center transition-colors ${
+                                        data.auto_classify ? 'border-brand bg-brand text-black' : 'border-zinc-600'
+                                    }`}>
+                                        {data.auto_classify && <Check size={14} />}
+                                    </div>
+                                    <div>
+                                        <div className={`text-sm font-bold uppercase tracking-wider ${data.auto_classify ? 'text-brand' : 'text-white'}`}>
+                                            Request Auto-Classification
+                                        </div>
+                                        <div className="text-xs text-zinc-500 font-primary">
+                                            Enable AI analysis for crop disease identification
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`text-xs font-mono uppercase px-2 py-1 border ${
+                                    data.auto_classify ? 'border-brand text-brand' : 'border-zinc-700 text-zinc-700'
+                                }`}>
+                                    {data.auto_classify ? 'ACTIVE' : 'OFFLINE'}
+                                </div>
                             </div>
                         )}
 
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-4">
+                            <Link
+                                // @ts-ignore
+                                href={route('forum.index')}
+                                className="px-6 py-3 text-sm font-primary uppercase tracking-wider text-zinc-400 hover:text-white transition-colors flex items-center"
+                            >
+                                Cancel
+                            </Link>
                             <button
                                 type="submit"
                                 disabled={processing}

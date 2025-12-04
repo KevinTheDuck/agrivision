@@ -53,14 +53,14 @@ export default function ShareModal({ isOpen, onClose, url, title }: ShareModalPr
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2 block">
+                                    <label className="text-xs font-primary text-zinc-500 uppercase tracking-wider mb-2 block">
                                         Transmission Link
                                     </label>
                                     <div className="flex gap-2">
                                         <input 
                                             readOnly 
                                             value={url} 
-                                            className="flex-grow bg-black/50 border border-white/10 px-3 py-2 text-sm font-mono text-zinc-300 focus:outline-none"
+                                            className="flex-grow bg-black/50 border border-white/10 px-3 py-2 text-sm font-primary text-zinc-300 focus:outline-none"
                                         />
                                         <button 
                                             onClick={handleCopy}
@@ -73,7 +73,7 @@ export default function ShareModal({ isOpen, onClose, url, title }: ShareModalPr
                                 </div>
 
                                 <div>
-                                    <label className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-2 block">
+                                    <label className="text-xs font-primary text-zinc-500 uppercase tracking-wider mb-2 block">
                                         Broadcast To Network
                                     </label>
                                     <div className="flex gap-2">

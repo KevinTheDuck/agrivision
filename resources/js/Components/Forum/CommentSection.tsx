@@ -51,7 +51,7 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = fals
     return (
         <div className={`mt-4 ${depth > 0 ? 'ml-8 border-l border-white/10 pl-4' : ''} ${comment.is_pinned ? 'bg-brand/5 border border-brand/20 p-4 rounded' : ''}`}>
             {comment.is_pinned && (
-                <div className="flex items-center gap-2 text-brand text-[10px] font-mono uppercase tracking-widest mb-2">
+                <div className="flex items-center gap-2 text-brand text-[10px] font-primary uppercase tracking-widest mb-2">
                     <Pin size={10} /> Pinned Transmission
                 </div>
             )}
@@ -60,7 +60,7 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = fals
                     <VoteControl id={comment.id} type="comment" score={comment.score} userVote={comment.user_vote} />
                 </div>
                 <div className="flex-grow">
-                    <div className="flex items-center gap-2 text-xs text-zinc-500 mb-1 font-mono">
+                    <div className="flex items-center gap-2 text-xs text-zinc-500 mb-1 font-primary">
                         <div className="w-6 h-6 rounded-full overflow-hidden border border-white/20">
                             {comment.user.avatar ? (
                                 <img src={comment.user.avatar} alt={comment.user.name} className="w-full h-full object-cover" />
@@ -92,7 +92,7 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = fals
                         {!isLocked && (
                             <button 
                                 onClick={() => setReplying(!replying)}
-                                className="text-xs text-zinc-500 hover:text-white flex items-center gap-1 font-mono uppercase tracking-wider"
+                                className="text-xs text-zinc-500 hover:text-white flex items-center gap-1 font-primary uppercase tracking-wider"
                             >
                                 <MessageSquare size={12} /> Reply
                             </button>
@@ -101,7 +101,7 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = fals
                         {(isModerator || isCommenter) && (
                             <button 
                                 onClick={handleDelete}
-                                className="text-xs text-red-500/50 hover:text-red-500 flex items-center gap-1 font-mono uppercase tracking-wider"
+                                className="text-xs text-red-500/50 hover:text-red-500 flex items-center gap-1 font-primary uppercase tracking-wider"
                             >
                                 <Trash2 size={12} /> Delete
                             </button>
@@ -110,7 +110,7 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = fals
                         {isModerator && depth === 0 && (
                             <button 
                                 onClick={handlePin}
-                                className={`text-xs flex items-center gap-1 font-mono uppercase tracking-wider ${comment.is_pinned ? 'text-brand hover:text-brand/80' : 'text-zinc-500 hover:text-white'}`}
+                                className={`text-xs flex items-center gap-1 font-primary uppercase tracking-wider ${comment.is_pinned ? 'text-brand hover:text-brand/80' : 'text-zinc-500 hover:text-white'}`}
                             >
                                 <Pin size={12} /> {comment.is_pinned ? 'Unpin' : 'Pin'}
                             </button>
@@ -122,7 +122,7 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = fals
                             <textarea
                                 value={data.body}
                                 onChange={e => setData('body', e.target.value)}
-                                className="w-full bg-black/40 border border-white/10 text-white px-3 py-2 text-sm focus:outline-none focus:border-brand font-mono"
+                                className="w-full bg-black/40 border border-white/10 text-white px-3 py-2 text-sm focus:outline-none focus:border-brand font-primary"
                                 placeholder="Write a reply..."
                                 rows={3}
                             />
@@ -130,7 +130,7 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = fals
                                 <button 
                                     type="button" 
                                     onClick={() => setReplying(false)}
-                                    className="text-xs text-zinc-500 hover:text-white font-mono uppercase"
+                                    className="text-xs text-zinc-500 hover:text-white font-primary uppercase"
                                 >
                                     Cancel
                                 </button>
@@ -180,7 +180,7 @@ export default function CommentSection({ post }: { post: any }) {
             </h3>
 
             {post.is_locked && !isModerator ? (
-                <div className="mb-12 p-4 border border-red-500/30 bg-red-500/10 text-red-400 font-mono text-sm flex items-center gap-2">
+                <div className="mb-12 p-4 border border-red-500/30 bg-red-500/10 text-red-400 font-primary text-sm flex items-center gap-2">
                     <Shield size={16} />
                     This transmission has been locked by a moderator. No further comments are allowed.
                 </div>
@@ -189,7 +189,7 @@ export default function CommentSection({ post }: { post: any }) {
                     <textarea
                         value={data.body}
                         onChange={e => setData('body', e.target.value)}
-                        className="w-full bg-black/40 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-brand font-mono"
+                        className="w-full bg-black/40 border border-white/10 text-white px-4 py-3 focus:outline-none focus:border-brand font-primary"
                         placeholder={post.is_locked ? "Write a moderator note..." : "Add to the transmission..."}
                         rows={4}
                     />

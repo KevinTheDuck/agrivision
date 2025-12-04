@@ -89,7 +89,7 @@ export default function Navbar() {
                                     <div className="text-left hidden lg:block">
                                         <p className="text-xs font-bold uppercase tracking-wider leading-none">{auth.user.name}</p>
                                         {auth.user.flair && (
-                                            <p className="text-[10px] text-brand font-mono mt-1 leading-none">{auth.user.flair}</p>
+                                            <p className="text-[10px] text-brand font-primary mt-1 leading-none">{auth.user.flair}</p>
                                         )}
                                     </div>
                                     <ChevronDown size={14} className={`transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
@@ -101,9 +101,9 @@ export default function Navbar() {
                                         
                                         <div className="mb-4 pb-4 border-b border-white/10">
                                             <p className="text-sm font-bold text-white">{auth.user.name}</p>
-                                            <p className="text-xs text-zinc-500 font-mono mt-1">{auth.user.email}</p>
+                                            <p className="text-xs text-zinc-500 font-primary mt-1">{auth.user.email}</p>
                                             {auth.user.flair && (
-                                                <span className="inline-block mt-2 px-2 py-1 bg-brand/10 text-brand text-[10px] font-mono uppercase tracking-wider rounded-sm border border-brand/20">
+                                                <span className="inline-block mt-2 px-2 py-1 bg-brand/10 text-brand text-[10px] font-primary uppercase tracking-wider rounded-sm border border-brand/20">
                                                     {auth.user.flair}
                                                 </span>
                                             )}
@@ -113,14 +113,14 @@ export default function Navbar() {
                                             <Link 
                                                 // @ts-ignore
                                                 href={route('profile.show', auth.user.id)}
-                                                className="flex items-center gap-3 text-xs font-mono text-zinc-400 hover:text-white hover:bg-white/5 p-2 rounded-sm transition-colors"
+                                                className="flex items-center gap-3 text-xs font-primary text-zinc-400 hover:text-white hover:bg-white/5 p-2 rounded-sm transition-colors"
                                             >
                                                 <UserIcon size={14} />
                                                 MY PROFILE
                                             </Link>
                                             <Link 
                                                 href={route('profile.edit')}
-                                                className="flex items-center gap-3 text-xs font-mono text-zinc-400 hover:text-white hover:bg-white/5 p-2 rounded-sm transition-colors"
+                                                className="flex items-center gap-3 text-xs font-primary text-zinc-400 hover:text-white hover:bg-white/5 p-2 rounded-sm transition-colors"
                                             >
                                                 <Settings size={14} />
                                                 SETTINGS
@@ -129,7 +129,7 @@ export default function Navbar() {
                                                 href="/logout" 
                                                 method="post" 
                                                 as="button"
-                                                className="w-full flex items-center gap-3 text-xs font-mono text-red-400 hover:text-red-300 hover:bg-red-500/10 p-2 rounded-sm transition-colors"
+                                                className="w-full flex items-center gap-3 text-xs font-primary text-red-400 hover:text-red-300 hover:bg-red-500/10 p-2 rounded-sm transition-colors"
                                             >
                                                 <LogOut size={14} />
                                                 DISCONNECT
@@ -207,7 +207,7 @@ export default function Navbar() {
                             </div>
                             <div>
                                 <p className="text-sm font-bold text-white">{auth.user.name}</p>
-                                <p className="text-xs text-zinc-500 font-mono">{auth.user.email}</p>
+                                <p className="text-xs text-zinc-500 font-primary">{auth.user.email}</p>
                             </div>
                         </div>
 

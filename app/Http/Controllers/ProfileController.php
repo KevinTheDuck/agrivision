@@ -18,18 +18,26 @@ class ProfileController extends Controller
     /**
      * Display the user's public profile.
      */
-    public function show(User $user): Response
+    public function show(User $user, Request $request): Response
     {
-        $user->load(['posts' => function ($query) {
-            $query->with(['categories', 'votes'])->withCount('comments')->latest();
-        }, 'comments' => function ($query) {
-            $query->with(['post', 'votes'])->latest();
-        }]);
+        $posts = $user->posts()
+            ->with(['categories', 'votes', 'user'])
+            ->withCount('comments')
+            ->latest()
+            ->paginate(10, ['*'], 'posts_page')
+            ->appends(['tab' => 'posts']);
+
+        $comments = $user->comments()
+            ->with(['post', 'votes'])
+            ->latest()
+            ->paginate(10, ['*'], 'comments_page')
+            ->appends(['tab' => 'comments']);
 
         return Inertia::render('Profile/Show', [
             'profileUser' => $user,
-            'posts' => $user->posts,
-            'comments' => $user->comments,
+            'posts' => $posts,
+            'comments' => $comments,
+            'initialTab' => $request->input('tab', 'posts'),
         ]);
     }
 

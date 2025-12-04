@@ -108,7 +108,7 @@ export default function DetectionPromo() {
                             <div className="text-[10px] text-gray-500 uppercase tracking-widest">
                                 Target ID
                             </div>
-                            <div className="text-sm font-mono text-green-500">
+                            <div className="text-sm font-primary text-green-500">
                                 IMG_8842_RAW
                             </div>
                         </div>
@@ -116,7 +116,7 @@ export default function DetectionPromo() {
                             <div className="text-[10px] text-gray-500 uppercase tracking-widest">
                                 Status
                             </div>
-                            <div className="text-sm font-mono text-white flex items-center justify-end gap-2">
+                            <div className="text-sm font-primary text-white flex items-center justify-end gap-2">
                                 Processing{" "}
                                 <span className="block w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                             </div>

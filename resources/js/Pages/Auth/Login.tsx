@@ -12,7 +12,7 @@ export default function Login() {
                     <div className="max-w-7xl mx-auto px-6">
                         <Link href="/" className="inline-flex items-center gap-2 text-zinc-400 hover:text-brand transition-colors group">
                             <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                            <span className="text-sm font-mono uppercase tracking-wider">Back to Home</span>
+                            <span className="text-sm font-primary uppercase tracking-wider">Back to Home</span>
                         </Link>
                     </div>
                 </div>
@@ -39,7 +39,7 @@ export default function Login() {
                             <h1 className="text-3xl font-headline font-bold text-center mb-2 text-white tracking-wider">
                                 SYSTEM ACCESS
                             </h1>
-                            <p className="text-center text-brand/60 text-xs mb-8 font-mono uppercase tracking-widest">
+                            <p className="text-center text-brand/60 text-xs mb-8 font-primary uppercase tracking-widest">
                                 // Authentication Required
                             </p>
                         </motion.div>
@@ -53,7 +53,7 @@ export default function Login() {
                                 className="flex items-center justify-center w-full py-4 px-4 border border-white/10 bg-white/5 hover:bg-brand/10 hover:border-brand/50 text-white hover:text-brand transition-all duration-300 group relative overflow-hidden"
                             >
                                 <Chrome className="w-5 h-5 mr-3 relative z-10" />
-                                <span className="relative z-10 font-mono text-sm uppercase tracking-wider">Login with Google</span>
+                                <span className="relative z-10 font-primary text-sm uppercase tracking-wider">Login with Google</span>
                             </motion.a>
                             
                             <motion.a
@@ -64,7 +64,7 @@ export default function Login() {
                                 className="flex items-center justify-center w-full py-4 px-4 border border-white/10 bg-white/5 hover:bg-brand/10 hover:border-brand/50 text-white hover:text-brand transition-all duration-300 group relative overflow-hidden"
                             >
                                 <Github className="w-5 h-5 mr-3 relative z-10" />
-                                <span className="relative z-10 font-mono text-sm uppercase tracking-wider">Login with GitHub</span>
+                                <span className="relative z-10 font-primary text-sm uppercase tracking-wider">Login with GitHub</span>
                             </motion.a>
                         </div>
                         
@@ -74,7 +74,7 @@ export default function Login() {
                             transition={{ delay: 0.8, duration: 0.5 }}
                             className="mt-8 text-center"
                         >
-                            <p className="text-[10px] text-white/20 font-mono">
+                            <p className="text-[10px] text-white/20 font-primary">
                                 ESTABLISHING SECURE UPLINK...
                             </p>
                         </motion.div>
@@ -82,8 +82,8 @@ export default function Login() {
                 </main>
 
                 <footer className="py-6 text-center border-t border-white/5 bg-black/50 backdrop-blur-sm relative z-10">
-                    <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">
-                        Agrivision Systems © {new Date().getFullYear()} // Secure Access Terminal
+                    <p className="text-[10px] text-zinc-600 font-primary tracking-widest">
+                        {new Date().getFullYear()} Agrivision Inc. // Secure Access Terminal
                     </p>
                 </footer>
             </div>

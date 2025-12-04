@@ -64,7 +64,7 @@ export default function ConfirmationModal({
                             <div className="flex justify-end gap-4">
                                 <button
                                     onClick={onClose}
-                                    className="px-4 py-2 text-sm font-mono uppercase text-zinc-400 hover:text-white transition-colors"
+                                    className="px-4 py-2 text-sm font-primary uppercase text-zinc-400 hover:text-white transition-colors"
                                 >
                                     {cancelText}
                                 </button>
@@ -73,7 +73,7 @@ export default function ConfirmationModal({
                                         onConfirm();
                                         onClose();
                                     }}
-                                    className={`px-6 py-2 text-sm font-bold font-mono uppercase transition-colors ${
+                                    className={`px-6 py-2 text-sm font-bold font-primary uppercase transition-colors ${
                                         isDestructive 
                                             ? 'bg-red-500 text-black hover:bg-red-400' 
                                             : 'bg-brand text-black hover:bg-white'

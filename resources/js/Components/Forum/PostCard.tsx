@@ -25,7 +25,7 @@ export default function PostCard({ post }: PostProps) {
                 </div>
 
                 <div className="flex-grow">
-                    <div className="flex items-center gap-2 text-xs text-zinc-500 mb-2 font-mono">
+                    <div className="flex items-center gap-2 text-xs text-zinc-500 mb-2 font-primary">
                         {post.is_featured && (
                             <span className="text-brand flex items-center gap-1">
                                 <Star size={10} /> FEATURED
@@ -75,14 +75,14 @@ export default function PostCard({ post }: PostProps) {
                         <Link 
                             // @ts-ignore
                             href={route('forum.show', post.id)} 
-                            className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors font-mono uppercase tracking-wider"
+                            className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors font-primary uppercase tracking-wider"
                         >
                             <MessageSquare size={14} />
                             {post.comments_count} Comments
                         </Link>
                         <button 
                             onClick={() => setIsShareModalOpen(true)}
-                            className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors font-mono uppercase tracking-wider"
+                            className="flex items-center gap-2 text-xs text-zinc-400 hover:text-white transition-colors font-primary uppercase tracking-wider"
                         >
                             <Share2 size={14} />
                             Share

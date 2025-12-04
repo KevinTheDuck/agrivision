@@ -26,7 +26,7 @@ export default function VoteControl({ id, type, score, userVote }: VoteControlPr
             >
                 <ChevronUp size={20} />
             </button>
-            <span className={`text-sm font-mono font-bold ${userVote !== 0 ? 'text-brand' : 'text-zinc-400'}`}>
+            <span className={`text-sm font-primary font-bold ${userVote !== 0 ? 'text-brand' : 'text-zinc-400'}`}>
                 {score}
             </span>
             <button 

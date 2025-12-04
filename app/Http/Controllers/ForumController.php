@@ -89,7 +89,7 @@ class ForumController extends Controller
     {
         $post = Post::with(['user', 'categories', 'votes'])
             ->with(['comments' => function ($query) {
-                $query->with(['user', 'votes', 'replies.user', 'replies.votes'])
+                $query->with(['user', 'votes', 'replies.user', 'replies.votes', 'replies.replies.user', 'replies.replies.votes'])
                       ->orderBy('is_pinned', 'desc')
                       ->orderBy('created_at', 'desc');
             }])
