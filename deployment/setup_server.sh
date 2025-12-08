@@ -18,7 +18,11 @@ cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 # sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
 
 # Restart SSH
-systemctl restart sshd
+if systemctl list-units --full -all | grep -Fq "sshd.service"; then
+    systemctl restart sshd
+else
+    systemctl restart ssh
+fi
 
 # 2. Firewall Setup (UFW)
 echo "Configuring Firewall (UFW)..."
