@@ -19,9 +19,13 @@ compose() {
 
 # Load .env from project root if it exists
 if [ -f ".env" ]; then
-    export $(grep -v '^#' .env | xargs)
+    set -a
+    source .env
+    set +a
 elif [ -f "../.env" ]; then
-    export $(grep -v '^#' ../.env | xargs)
+    set -a
+    source "../.env"
+    set +a
 fi
 
 # Parse DOMAINS from env (space separated string) into array, or default
