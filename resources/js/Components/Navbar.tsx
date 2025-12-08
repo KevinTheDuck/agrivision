@@ -13,7 +13,7 @@ export default function Navbar() {
     const navItems = [
         { label: "Home", href: "/" },
         { label: "Forum", href: "/forum" },
-        { label: "Contact", href: "/contact" },
+        { label: "Demo Model", href: "/demo" },
     ];
 
     useEffect(() => {

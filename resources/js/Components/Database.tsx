@@ -105,12 +105,22 @@ export default function Community() {
                                 </p>
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <button className="bg-white text-black px-6 py-3 rounded-lg font-primary font-bold text-sm hover:bg-green-400 transition-colors flex justify-center items-center gap-2">
-                                        <FileJson size={16} /> Download JSON
-                                    </button>
-                                    <button className="bg-transparent border border-white/20 text-white font-primary px-6 py-3 rounded-lg font-bold text-sm hover:bg-white/5 transition-colors">
+                                    <a 
+                                        href="https://www.kaggle.com/datasets/mohitsingh1804/plantvillage"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="bg-white text-black px-6 py-3 rounded-lg font-primary font-bold text-sm hover:bg-green-400 transition-colors flex justify-center items-center gap-2"
+                                    >
+                                        <FileJson size={16} /> Download Dataset
+                                    </a>
+                                    <a 
+                                        href="https://github.com/KevinTheDuck/agrivision-cv-model"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="bg-transparent border border-white/20 text-white font-primary px-6 py-3 rounded-lg font-bold text-sm hover:bg-white/5 transition-colors flex justify-center items-center"
+                                    >
                                         View Docs
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +137,7 @@ export default function Community() {
                         </div>
                     </div>
 
-                    <div className="md:col-span-1 lg:col-span-1 row-span-2 relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col">
+                    <div className="md:col-span-1 lg:col-span-2 row-span-2 relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] flex flex-col">
                         <div className="p-6 border-b border-white/10 bg-white/[0.02]">
                             <div className="flex items-center gap-3 mb-1">
                                 <MessageCircle
@@ -195,32 +205,6 @@ export default function Community() {
                             >
                                 Join Discussion
                             </Link>
-                        </div>
-                    </div>
-
-                    <div className="md:col-span-1 lg:col-span-1 bg-[#0a0a0a] rounded-2xl border border-white/10 p-6 flex flex-col justify-center hover:bg-white/5 transition-colors group">
-                        <Globe
-                            className="text-gray-600 group-hover:text-white mb-4 transition-colors"
-                            size={24}
-                        />
-                        <div className="text-3xl font-bold text-white mb-1 font-primary">
-                            142
-                        </div>
-                        <div className="text-xs text-gray-500 uppercase tracking-wider font-primary">
-                            Countries Active
-                        </div>
-                    </div>
-
-                    <div className="md:col-span-1 lg:col-span-1 bg-[#0a0a0a] rounded-2xl border border-white/10 p-6 flex flex-col justify-center hover:bg-white/5 transition-colors group">
-                        <Users
-                            className="text-gray-600 group-hover:text-white mb-4 transition-colors"
-                            size={24}
-                        />
-                        <div className="text-3xl font-bold text-white mb-1 font-primary">
-                            12K
-                        </div>
-                        <div className="text-xs text-gray-500 uppercase tracking-wider font-primary">
-                            Researchers
                         </div>
                     </div>
                 </div>

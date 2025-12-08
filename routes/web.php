@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DemoController;
 
 Route::get("/", [HomeController::class, "index"])->name("home");
 
@@ -26,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update'); // Using POST for file upload support with Inertia sometimes easier, but PATCH is standard. Let's stick to POST for update with files or use _method: PATCH
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/user/{user}', [ProfileController::class, 'show'])->name('profile.show');
+    Route::post('/user/{user}/toggle-expert', [ProfileController::class, 'toggleExpert'])->name('profile.toggleExpert');
 
     // Forum Routes
     Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
@@ -42,6 +44,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/comments/{id}/vote', [CommentController::class, 'vote'])->name('comments.vote');
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments/{comment}/pin', [CommentController::class, 'togglePin'])->name('comments.togglePin');
+
+    // Demo Routes
+    Route::get('/demo', [DemoController::class, 'index'])->name('demo.index');
+    Route::post('/demo/analyze', [DemoController::class, 'analyze'])->name('demo.analyze');
 });
 
 Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('social.redirect');

@@ -1,8 +1,10 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Cpu, Scan, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Link, usePage } from "@inertiajs/react";
 
 export default function DetectionPromo() {
+    const { auth } = usePage().props as any;
     return (
         <section className="bg-black py-24 relative overflow-hidden border-t border-white/10">
             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-green-900/10 to-transparent pointer-events-none" />
@@ -12,7 +14,7 @@ export default function DetectionPromo() {
                 <div className="relative z-10 order-2 lg:order-1">
                     <div className="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs font-primary font-bold uppercase tracking-widest">
                         <Cpu size={14} />
-                        <span>ResNet-50 Powered</span>
+                        <span>MobileNetV2 Powered</span>
                     </div>
 
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight leading-none font-headline">
@@ -30,15 +32,15 @@ export default function DetectionPromo() {
                         {[
                             {
                                 label: "Multi-Crop Support",
-                                desc: "Optimized for Wheat, Rice, Corn, and Potato.",
+                                desc: "Optimized for apples, tomatoes, potatoes, and more.",
                             },
                             {
-                                label: "Offline Capable",
-                                desc: "PWA support enables field use without internet.",
+                                label: "Open Source Models",
+                                desc: "Transparent and community-driven development.",
                             },
                             {
-                                label: "Heatmap Visualization",
-                                desc: "Pinpoint exact infection zones on leaves.",
+                                label: "~98% Accuracy",
+                                desc: "Accurate detection of 30+ plant diseases.",
                             },
                         ].map((item, i) => (
                             <motion.div
@@ -65,9 +67,12 @@ export default function DetectionPromo() {
                         ))}
                     </div>
 
-                    <button className="bg-green-500 font-primary text-black px-8 py-4 font-bold uppercase tracking-wider text-sm rounded-sm hover:bg-green-400 transition-all flex items-center gap-2">
+                    <Link 
+                        href={auth.user ? route('demo.index') : route('login')}
+                        className="bg-green-500 font-primary text-black px-8 py-4 font-bold uppercase tracking-wider text-sm rounded-sm hover:bg-green-400 transition-all flex items-center gap-2 w-fit"
+                    >
                         Try Demo Model <Scan size={16} />
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="relative order-1 lg:order-2 h-[500px] flex items-center justify-center bg-neutral-900/50 rounded-lg border border-white/10 overflow-hidden">

@@ -3,6 +3,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../../Components/Navbar';
 import PostCard from '../../Components/Forum/PostCard';
+import FlashMessage from '../../Components/FlashMessage';
 import { Plus, Search, Filter, Pin, Megaphone, Star, Eye, EyeOff, ChevronDown, ChevronUp, SlidersHorizontal } from 'lucide-react';
 
 export default function Index({ posts, featuredPosts, announcementPosts, categories, filters }: any) {
@@ -29,13 +30,14 @@ export default function Index({ posts, featuredPosts, announcementPosts, categor
             <Head title="Forum" />
             <div className="min-h-screen bg-background text-foreground font-primary selection:bg-brand selection:text-black">
                 <Navbar />
+                <FlashMessage />
                 
-                <main className="pt-24 pb-12 px-4 max-w-7xl mx-auto">
+                <main className="pt-24 pb-12 px-4 max-w-7xl mx-auto flex gap-8">
                     <motion.div 
                         variants={containerVariants}
                         initial="hidden"
                         animate="show"
-                        className="flex flex-col md:flex-row gap-8"
+                        className="flex flex-col md:flex-row gap-8 w-full"
                     >
                         {/* Sidebar */}
                         <motion.div 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm, usePage, Link, router } from '@inertiajs/react';
 import VoteControl from './VoteControl';
-import { MessageSquare, CornerDownRight, Shield, Trash2, Pin } from 'lucide-react';
+import { MessageSquare, CornerDownRight, Shield, Trash2, Pin, CheckCircle } from 'lucide-react';
 
 interface CommentProps {
     comment: any;
@@ -77,6 +77,7 @@ function CommentItem({ comment, postId, postAuthorId, depth = 0, isLocked = fals
                         >
                             {comment.user.name}
                             {isCommenterMod && <Shield size={10} className="text-green-500" />}
+                            {comment.user.is_expert && <CheckCircle size={10} className="text-blue-500" />}
                         </Link>
                         {isAuthor && <span className="bg-brand/10 text-brand px-1 rounded text-[10px] uppercase border border-brand/20">AUTHOR</span>}
                         {isCommenterMod && <span className="bg-green-500/10 text-green-500 px-1 rounded text-[10px] uppercase border border-green-500/20">MOD</span>}

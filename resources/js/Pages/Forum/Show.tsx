@@ -6,7 +6,8 @@ import VoteControl from '../../Components/Forum/VoteControl';
 import CommentSection from '../../Components/Forum/CommentSection';
 import ShareModal from '../../Components/ShareModal';
 import ConfirmationModal from '../../Components/ConfirmationModal';
-import { ArrowLeft, Share2, AlertTriangle, Lock, Trash2, Shield, Star, Eye } from 'lucide-react';
+import FlashMessage from '../../Components/FlashMessage';
+import { ArrowLeft, Share2, AlertTriangle, Lock, Trash2, Shield, Star, Eye, CheckCircle } from 'lucide-react';
 
 export default function Show({ post }: any) {
     const { auth } = usePage().props as any;
@@ -89,8 +90,9 @@ export default function Show({ post }: any) {
             <Head title={post.title} />
             <div className="min-h-screen bg-background text-foreground font-primary selection:bg-brand selection:text-black">
                 <Navbar />
+                <FlashMessage />
                 
-                <main className="pt-24 pb-12 px-4 max-w-4xl mx-auto">
+                <main className="pt-24 pb-12 px-4 max-w-5xl mx-auto">
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
@@ -145,6 +147,9 @@ export default function Show({ post }: any) {
                                             {(post.user.role === 'moderator' || post.user.role === 'admin') && (
                                                 <Shield size={12} className="text-green-500" />
                                             )}
+                                            {post.user.is_expert && (
+                                                <CheckCircle size={12} className="text-blue-500" />
+                                            )}
                                         </Link>
                                         <span>•</span>
                                         <span>{new Date(post.created_at).toLocaleDateString()}</span>
@@ -184,8 +189,30 @@ export default function Show({ post }: any) {
                                                 <AlertTriangle size={14} /> SYSTEM ANALYSIS
                                             </h4>
                                             {post.classification_results ? (
-                                                <div className="text-sm text-zinc-300 font-mono">
-                                                    <pre>{JSON.stringify(post.classification_results, null, 2)}</pre>
+                                                <div className="text-sm text-zinc-300 font-primary">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <span className="text-zinc-500 uppercase text-xs tracking-wider">Detected Condition</span>
+                                                        <span className="text-brand font-bold">
+                                                            {(post.classification_results.confidence * 100).toFixed(1)}% Confidence
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-lg font-headline text-white mb-4">
+                                                        {post.classification_results.class.replace(/___/g, ' - ').replace(/_/g, ' ')}
+                                                    </div>
+                                                    
+                                                    <div className="w-full bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                                                        <div 
+                                                            className="h-full bg-brand" 
+                                                            style={{ width: `${post.classification_results.confidence * 100}%` }}
+                                                        />
+                                                    </div>
+
+                                                    <div className="mt-4 flex items-start gap-2 text-[10px] text-yellow-500/80 bg-yellow-500/10 p-2 rounded border border-yellow-500/20">
+                                                        <AlertTriangle size={12} className="shrink-0 mt-0.5" />
+                                                        <p>
+                                                            <strong>Disclaimer:</strong> AI analysis may be inaccurate. Results should be verified by experts or discussed with the community.
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             ) : (
                                                 <p className="text-xs text-zinc-500 font-primary">

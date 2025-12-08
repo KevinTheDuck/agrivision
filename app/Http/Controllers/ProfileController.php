@@ -104,4 +104,16 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function toggleExpert(User $user)
+    {
+        if (!auth()->user()->isModerator()) {
+            abort(403);
+        }
+
+        $user->is_expert = !$user->is_expert;
+        $user->save();
+
+        return back();
+    }
 }

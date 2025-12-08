@@ -26,11 +26,17 @@ class User extends Authenticatable
         'avatar',
         'flair',
         'role',
+        'is_expert',
     ];
 
     public function isModerator(): bool
     {
         return $this->role === 'moderator' || $this->role === 'admin';
+    }
+
+    public function isExpert(): bool
+    {
+        return $this->is_expert;
     }
 
     /**

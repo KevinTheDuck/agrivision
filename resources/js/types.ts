@@ -13,6 +13,11 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
     auth: {
         user: User;
     };
+    flash: {
+        message?: string;
+        error?: string;
+        success?: string;
+    };
 };
 
 export interface DitherProps {

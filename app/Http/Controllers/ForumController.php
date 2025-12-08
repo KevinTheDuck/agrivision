@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Vote;
+use App\Services\AgrivisionAIService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -129,10 +130,25 @@ class ForumController extends Controller
             $path = $request->file('image')->store('posts', 'public');
             $post->image_path = '/storage/' . $path;
             
-            // Placeholder for auto-classification logic
+            // Auto-classification logic
             if ($post->auto_classify) {
-                // Call CV model API here
-                // $post->classification_results = ...
+                try {
+                    $aiService = new AgrivisionAIService();
+                    $result = $aiService->classify($request->file('image'));
+                    
+                    if ($result['success']) {
+                        $post->classification_results = $result['data'];
+                    } else {
+                        // Log the error
+                        \Illuminate\Support\Facades\Log::warning('Auto-classification failed for post attempt: ' . $result['error']);
+                        
+                        // Return back with error, DO NOT SAVE
+                        return back()->withErrors(['image' => $result['error']])->withInput();
+                    }
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Auto-classification exception: ' . $e->getMessage());
+                    return back()->withErrors(['image' => 'System error during classification.'])->withInput();
+                }
             }
         }
 

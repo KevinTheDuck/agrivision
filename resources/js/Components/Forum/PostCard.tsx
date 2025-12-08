@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { MessageSquare, Share2, Lock, Shield, Star, Eye } from 'lucide-react';
+import { MessageSquare, Share2, Lock, Shield, Star, Eye, CheckCircle } from 'lucide-react';
 import VoteControl from './VoteControl';
 import ShareModal from '../ShareModal';
 
@@ -53,6 +53,9 @@ export default function PostCard({ post }: PostProps) {
                             @{post.user.name}
                             {(post.user.role === 'moderator' || post.user.role === 'admin') && (
                                 <Shield size={10} className="text-green-500" />
+                            )}
+                            {post.user.is_expert && (
+                                <CheckCircle size={10} className="text-blue-500" />
                             )}
                         </Link>
                         <span>•</span>

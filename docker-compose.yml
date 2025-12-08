@@ -1,0 +1,91 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agrivision-app
+    container_name: agrivision-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    environment:
+      APP_NAME: ${APP_NAME}
+      APP_ENV: ${APP_ENV}
+      APP_KEY: ${APP_KEY}
+      APP_DEBUG: ${APP_DEBUG}
+      APP_URL: ${APP_URL}
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      AGRIVISION_AI_URL: http://cv-model:8001
+    networks:
+      - agrivision-network
+
+  webserver:
+    image: nginx:alpine
+    container_name: agrivision-webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    networks:
+      - agrivision-network
+
+  certbot:
+    image: certbot/certbot
+    container_name: agrivision-certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - agrivision-network
+
+  db:
+    image: mysql:8.0
+    container_name: agrivision-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - agrivision-network
+
+  cv-model:
+    # Assuming the CV model is in a sibling directory named 'agrivision-cv-model'
+    # You might need to adjust the build context path
+    build: 
+      context: ../agrivision-cv-model
+      dockerfile: docker/Dockerfile.prod
+    image: agrivision-cv
+    container_name: agrivision-cv
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    networks:
+      - agrivision-network
+
+networks:
+  agrivision-network:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local

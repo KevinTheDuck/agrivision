@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import Navbar from '../../Components/Navbar';
 import PostCard from '../../Components/Forum/PostCard';
 import Pagination from '../../Components/Pagination';
-import { User as UserIcon, MessageSquare, FileText, Calendar, Tag, Shield } from 'lucide-react';
+import { User as UserIcon, MessageSquare, FileText, Calendar, Tag, Shield, CheckCircle } from 'lucide-react';
 
 export default function Show({ profileUser, posts, comments, initialTab = 'posts' }: any) {
+    const { auth } = usePage().props as any;
     const [activeTab, setActiveTab] = useState<'posts' | 'comments'>(initialTab);
 
     useEffect(() => {
@@ -68,7 +69,26 @@ export default function Show({ profileUser, posts, comments, initialTab = 'posts
                                                 <Shield size={12} /> Moderator
                                             </span>
                                         )}
+                                        {profileUser.is_expert && (
+                                            <span className="flex items-center gap-1 px-2 py-0.5 bg-blue-500/10 text-blue-500 text-[10px] font-primary uppercase tracking-wider rounded-sm border border-blue-500/20">
+                                                <CheckCircle size={12} /> Verified Expert
+                                            </span>
+                                        )}
                                     </div>
+                                    
+                                    {auth.user && (auth.user.role === 'moderator' || auth.user.role === 'admin') && (
+                                        <div className="mb-4 flex justify-center md:justify-start">
+                                            <button
+                                                // @ts-ignore
+                                                onClick={() => router.post(route('profile.toggleExpert', profileUser.id))}
+                                                className="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-300 px-3 py-1 rounded border border-white/10 transition-colors flex items-center gap-2"
+                                            >
+                                                <CheckCircle size={12} />
+                                                {profileUser.is_expert ? 'Remove Expert Status' : 'Mark as Expert'}
+                                            </button>
+                                        </div>
+                                    )}
+
                                     {profileUser.flair && (
                                         <div className="mb-4">
                                             <span className="inline-block px-2 py-1 bg-brand/10 text-brand text-xs font-primary uppercase tracking-wider rounded-sm border border-brand/20">

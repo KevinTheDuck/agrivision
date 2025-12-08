@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import Navbar from '../../Components/Navbar';
+import FlashMessage from '../../Components/FlashMessage';
 import { Upload, X, Shield, Check } from 'lucide-react';
 
 export default function Create({ categories }: any) {
@@ -43,6 +44,7 @@ export default function Create({ categories }: any) {
             <Head title="Create Post" />
             <div className="min-h-screen bg-background text-foreground font-primary selection:bg-brand selection:text-black">
                 <Navbar />
+                <FlashMessage />
                 
                 <main className="pt-24 pb-12 px-4 max-w-3xl mx-auto">
                     <div className="mb-8 border-b border-white/10 pb-4">

@@ -64,7 +64,7 @@ export default function Hero() {
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-10 mb-28">
                         <Link 
-                            href={auth.user ? route('forum.index') : route('login')}
+                            href={auth.user ? route('demo.index') : route('login')}
                             className="group relative px-8 py-4 bg-foreground text-background text-sm font-headline font-bold uppercase tracking-wider overflow-hidden rounded-sm transition-all hover:bg-brand inline-block"
                         >
                             <span className="relative z-10 flex items-center gap-2">
