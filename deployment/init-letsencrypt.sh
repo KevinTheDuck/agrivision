@@ -18,8 +18,9 @@ compose() {
 }
 
 # Load .env from project root if it exists
-if [ -f "../.env" ]; then
-    # Load variables, ignoring comments
+if [ -f ".env" ]; then
+    export $(grep -v '^#' .env | xargs)
+elif [ -f "../.env" ]; then
     export $(grep -v '^#' ../.env | xargs)
 fi
 
